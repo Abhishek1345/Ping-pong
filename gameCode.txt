@@ -1,0 +1,127 @@
+
+import javax.swing.*;                                                                           
+import java.awt.*;
+import java.awt.event.*;
+
+    
+public class prog extends KeyAdapter{
+    JFrame f;
+    Game g;
+    public void setUp(){
+        
+         f=new JFrame("game");
+        f.setSize(500,500);
+        f.addKeyListener(this);
+        g=new Game();
+        f.add(g);
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        f.setFocusable(true);
+        f.setVisible(true);
+        while(true){
+            f.requestFocus();
+        }
+        
+       }   
+
+ public static void main(String args[]){
+new prog().setUp();
+}
+
+
+public void keyPressed(KeyEvent e){
+if(e.getKeyCode()==KeyEvent.VK_RIGHT){
+g.rspeedX=2;
+}
+else if(e.getKeyCode()==KeyEvent.VK_LEFT){
+g.rspeedX=-2;
+}
+else if(e.getKeyCode()==KeyEvent.VK_R){
+    g.bx=240;
+    g.by=20;
+}
+else if(e.getKeyCode()==KeyEvent.VK_ENTER){
+    f.remove(g);
+}
+}
+
+public void keyReleased(KeyEvent e){
+g.rspeedX=0;
+}
+}
+
+class Game extends JPanel implements ActionListener{
+
+int rx=0,ry=300,bx=240,by=20;
+
+int bspeedX=1,bspeedY=1,rspeedX=0;
+
+Timer t=new Timer(5,this);
+
+int status[]={1,1,1,1,1,1,1};
+
+public void paintComponent(Graphics g){
+super.paintComponent(g);
+g.setColor(Color.BLUE);
+g.fillArc(bx,by,20,20,0,360);
+g.setColor(Color.RED);
+g.fillRect(rx,ry,50,10);
+
+    drawBlocks(g);
+t.start();
+}
+
+
+
+@Override
+public void actionPerformed(ActionEvent e){
+bx+=bspeedX;
+by+=bspeedY;
+rx+=rspeedX;
+if(intersectsRacquet()||intersectsBlock()){
+    bspeedY*=-1;
+    
+    
+}
+if(bx<0||bx>462){
+    bspeedX*=-1;
+}
+if(by<0){
+    bspeedY*=-1;
+}
+repaint();
+}
+
+public boolean intersectsRacquet(){
+    
+    return new Rectangle(rx,ry,50,10).intersects(new Rectangle(bx,by,20,20));
+}
+public boolean intersectsBlock(){
+int a=0,w=462/7,i=0;
+    do{
+        if(new Rectangle(bx,by,20,20).intersects(new Rectangle(a,0,w,10))){
+        
+        status[i]=0;
+        return true;
+    }
+        
+        a+=w;
+        i++;
+    }while(i<7);
+    return false;
+}
+
+public void drawBlocks(Graphics g){
+    int a=0;
+int w=462/7;
+for(int i=0;i<7;i++){
+    if(status[i]==1){
+        g.setColor(Color.YELLOW);
+        g.fillRect(a,0,w,10);
+        g.setColor(Color.BLACK);
+        g.drawRect(a,0,w,10);
+    }
+        a+=w;
+    }
+}
+}
+                                                                                                                                                                                                                                                                                                                                                            
